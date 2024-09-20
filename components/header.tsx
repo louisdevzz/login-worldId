@@ -63,12 +63,12 @@ export default function Header() {
                       <img alt="Profile picture of a person wearing a red jacket and sunglasses" className="w-10 h-10 rounded-full border border-gray-300" height="40" src={session.user.image} width="40"/>
                     )
                   }
-                  <span onClick={toggleMenu} className="text-sm font-medium text-gray-700 truncate w-32 p-2 px-3 rounded-full border border-gray-100 shadow-lg">
+                  <span onClick={toggleMenu} className="cursor-pointer text-sm font-medium text-gray-700 truncate w-32 p-2 px-3 rounded-full border border-gray-100 shadow-lg">
                       {session?.user?.email ?? session?.user?.name}
                   </span>
-                  <div className="px-4 py-2 text-blue-600 bg-blue-100 rounded-full">
+                  {/* <div className="px-4 py-2 text-blue-600 bg-blue-100 rounded-full">
                     Verified Human
-                  </div>
+                  </div> */}
                 </div>
                 <div className={`fixed z-10 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg ${isOpen ? 'block' : 'hidden'}`}>
                   <div className="flex items-center p-2 space-x-2">
@@ -77,51 +77,28 @@ export default function Header() {
                         <img alt="Profile picture of a person wearing a red jacket and sunglasses" className="w-10 h-10 rounded-full border border-gray-300" height="40" src={session.user.image} width="40"/>
                       )
                     }
-                    <span  className="text-sm font-medium text-gray-700 truncate">
+                    <span className="text-sm font-medium text-gray-700 truncate p-2">
                       {session?.user?.email ?? session?.user?.name}
                     </span>
                   </div>
                   <div className="p-2">
-                  <Link className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="#">
-                    Visit Near Profile
-                  </Link>
-                  <Link 
-                    className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" 
-                    href={`/api/auth/signout`}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      signOut()
-                    }}
-                  >
-                    Logout
-                  </Link>
+                    <Link className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="#">
+                      Visit Near Profile
+                    </Link>
+                    <Link 
+                      className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" 
+                      href={`/api/auth/signout`}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        signOut()
+                      }}
+                    >
+                      Logout
+                    </Link>
                   </div>
                 </div>
               </div>
             </div>
-            // <>
-            //   {session.user.image && (
-            //     <span
-            //       style={{ backgroundImage: `url('${session.user.image}')` }}
-            //       className={styles.avatar}
-            //     />
-            //   )}
-            //   <span className={styles.signedInText}>
-            //     <small>Signed in as</small>
-            //     <br />
-            //     <strong>{session.user.email ?? session.user.name}</strong>
-            //   </span>
-            //   <a
-            //     href={`/api/auth/signout`}
-            //     className={styles.button}
-            //     onClick={(e) => {
-            //       e.preventDefault()
-            //       signOut()
-            //     }}
-            //   >
-            //     Sign out
-            //   </a>
-            // </>
           )}
         </div>
       </div>
