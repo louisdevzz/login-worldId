@@ -14,7 +14,7 @@
   border-radius: 0 0 0.6rem 0.6rem;
   padding: 0.6rem 1rem;
   margin: 0;
-  background-color: rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e5e5e593;
   transition: all 0.2s ease-in;
 }
 
@@ -52,21 +52,42 @@
   background-repeat: no-repeat;
 }
 
-.button,
-.buttonPrimary {
-  float: right;
-  margin-right: -0.4rem;
-  font-weight: 500;
-  border-radius: 0.3rem;
+/* From Uiverse.io by Voxybuns */ 
+.button {
+  /* Variables */
+  --button_radius: 0.75em;
+  --button_color: #e8e8e8;
+  --button_outline_color: #000000;
+  font-size: 17px;
+  font-weight: bold;
+  border: none;
   cursor: pointer;
-  font-size: 1rem;
-  line-height: 1.4rem;
-  padding: 0.7rem 0.8rem;
-  position: relative;
-  z-index: 10;
-  background-color: transparent;
-  color: #555;
+  border-radius: var(--button_radius);
+  background: var(--button_outline_color);
 }
+
+.button_top {
+  display: block;
+  box-sizing: border-box;
+  border: 2px solid var(--button_outline_color);
+  border-radius: var(--button_radius);
+  padding: 0.4em 1.2em;
+  background: var(--button_color);
+  color: var(--button_outline_color);
+  transform: translateY(-0.2em);
+  transition: transform 0.1s ease;
+}
+
+.button:hover .button_top {
+  /* Pull the button upwards when hovered */
+  transform: translateY(-0.33em);
+}
+
+.button:active .button_top {
+  /* Push the button downwards when pressed */
+  transform: translateY(0);
+}
+
 
 .buttonPrimary {
   background-color: #346df1;
