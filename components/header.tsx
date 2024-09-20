@@ -57,6 +57,9 @@ export default function Header() {
                       <img alt="Profile picture of a person wearing a red jacket and sunglasses" className="w-10 h-10 rounded-full border border-gray-300" height="40" src={session.user.image} width="40"/>
                     )
                   }
+                  <span className="text-sm font-medium text-gray-700 truncate w-12 p-2 px-3 rounded-full border border-gray-100 shadow-lg">
+                      {session?.user?.email ?? session?.user?.name}
+                  </span>
                   <div className="px-4 py-2 text-blue-600 bg-blue-100 rounded-full">
                     Verified Human
                   </div>
@@ -69,7 +72,7 @@ export default function Header() {
                       )
                     }
                     <span className="text-sm font-medium text-gray-700 truncate">
-                    {session?.user?.email ?? session?.user?.name}
+                      {session?.user?.email ?? session?.user?.name}
                     </span>
                   </div>
                   <div className="p-2">
