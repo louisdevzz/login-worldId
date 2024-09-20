@@ -28,9 +28,9 @@ export default function Header() {
             <div className="flex justify-between items-center md:p-4 py-4 max-w-6xl mx-auto">
               <div className="flex items-center space-x-2">
                 <h1 className="text-3xl font-bold">
-                nada.
+                WorldCoin.
                 <span className="text-blue-600">
-                  BOT
+                  ID
                 </span>
                 </h1>
               </div>
