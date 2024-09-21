@@ -1,13 +1,13 @@
 import { useAccount } from "wagmi"
 import Layout from "../components/layout"
-import { useSession } from "next-auth/react"
+
 export default function IndexPage() {
   const account = useAccount()
   return (
     <Layout>
       <main className="max-w-6xl mx-auto p-4">
       {
-        account && (
+        account?.address && (
           <div className="flex md:flex-row flex-col md:space-x-6 mb-10 gap-5 md:gap-0">
             <div className="bg-white shadow-md rounded-lg p-6 flex-1 flex items-center border border-gray-300">
                 <div className="flex items-center space-x-4">
