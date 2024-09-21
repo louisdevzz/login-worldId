@@ -1,10 +1,57 @@
-import { useAccount } from "wagmi"
 import Layout from "../components/layout"
-
+import abi from '@/lib/ContractAbi.json'
+import { ConnectKitButton } from 'connectkit'
+import { IDKitWidget, ISuccessResult, useIDKit } from '@worldcoin/idkit'
+import { useAccount, useWriteContract, useWaitForTransactionReceipt, type BaseError } from 'wagmi'
+import { decodeAbiParameters, parseAbiParameters } from 'viem'
+import { useState } from 'react'
 export default function IndexPage() {
   const account = useAccount()
+
+  const { setOpen } = useIDKit()
+	const [done, setDone] = useState(false)
+	const { data: hash, isPending, error, writeContractAsync } = useWriteContract()
+	const { isLoading: isConfirming, isSuccess: isConfirmed } = 
+		useWaitForTransactionReceipt({
+			hash,
+		}) 
+
+	const submitTx = async (proof: ISuccessResult) => {
+		try {
+			await writeContractAsync({
+				address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+				account: account.address!,
+				abi,
+				functionName: 'buyCreditScoreNFT',
+				args: [
+					account.address!,
+					BigInt(proof!.merkle_root),
+					BigInt(proof!.nullifier_hash),
+					decodeAbiParameters(
+						parseAbiParameters('uint256[8]'),
+						proof!.proof as `0x${string}`
+					)[0],
+				],
+			})
+			setDone(true)
+		} catch (error) {throw new Error((error as BaseError).shortMessage)}
+	}
+  
+  console.log('hash',hash)
   return (
     <Layout>
+      {
+        account.isConnected&&
+        (
+          <IDKitWidget
+            app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
+            action={process.env.NEXT_PUBLIC_ACTION as string}
+            signal={account?.address}
+            onSuccess={submitTx}
+            autoClose
+          />
+        )
+      }
       <main className="max-w-6xl mx-auto p-4">
       {
         account?.address && (
@@ -15,17 +62,17 @@ export default function IndexPage() {
                         <div className="w-32 h-32 rounded-full border-8 border-gray-300 flex items-center justify-center text-gray-500 text-4xl font-bold">
                             10
                         </div>
-                        <div className="absolute -bottom-5 font-semibold left-1/2 transform -translate-x-1/2 text-gray-500 text-sm pb-10">
-                            0 Points
+                        <div className="absolute -bottom-4 font-semibold left-[72%] transform text-xs -translate-x-1/2 text-gray-500 w-32 pb-10">
+                            credit score
                         </div>
                     </div>
                     <div>
                         <div className="flex items-center space-x-2">
                             <img width={20} src="/assets/user.svg" alt="My Humanity Score" />
-                            <span className="text-gray-700 font-semibold">My Humanity Score</span>
+                            <span className="text-gray-700 font-semibold">My Credit Score</span>
                             {/* <div className="bg-blue-500 text-white text-sm px-3 py-1 rounded-full">Verified Human</div> */}
                         </div>
-                        <div className="text-gray-500 mt-1">You are not a verified human yet.</div>
+                        <div className="text-gray-500 mt-1">Your ability to get a personal loan.</div>
                     </div>
                 </div>
             </div>
@@ -41,7 +88,7 @@ export default function IndexPage() {
       }
       <section>
           <h2 className="text-3xl font-bold mb-2">
-            NFTs
+            NFT Credit Score
           </h2>
           <p className="mb-4">
             A unique collection of digital art NFTs that fuse creativity with innovation.
@@ -79,9 +126,17 @@ export default function IndexPage() {
                     holonym_id.near
                   </span>
                 </div>
-                <button className="button-mint mt-1">
-                  <span className="button_top-mint">Mint</span>
+                
+                {
+                  !done && <button disabled={isPending} onClick={()=>setOpen(true)} className="button-mint mt-1">
+                    <span className="button_top-mint">Mint</span>
                 </button>
+                }
+                {
+                  done && <button disabled={isPending} onClick={()=>setOpen(true)} className="button-mint mt-1">
+                    <span className="button_top-mint">Lending</span>
+                </button>
+                }
               </div>
             </div>
           </div>

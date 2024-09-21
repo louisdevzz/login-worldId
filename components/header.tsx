@@ -4,8 +4,6 @@ import { ConnectKitButton } from 'connectkit'
 export default function Header() {
   const account = useAccount()
 
-  console.log(account)
-
   return (
     <>
       <noscript>
@@ -32,9 +30,9 @@ export default function Header() {
             <div className="flex justify-between items-center md:p-4 py-4 max-w-6xl mx-auto">
               <div className="flex items-center space-x-2">
                 <h1 className="text-3xl font-bold">
-                nada.
+                Citadel.
                 <span className="text-blue-600">
-                  BOT
+                  OnChain
                 </span>
                 </h1>
               </div>
