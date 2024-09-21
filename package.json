@@ -1,27 +1,23 @@
 {
+  "name": "citadel-on-chain",
+  "version": "0.1.0",
   "private": true,
-  "description": "An example project for NextAuth.js with Next.js",
-  "repository": "https://github.com/nextauthjs/next-auth-example.git",
-  "bugs": {
-    "url": "https://github.com/nextauthjs/next-auth/issues"
-  },
-  "homepage": "https://next-auth-example.vercel.app",
   "scripts": {
-    "dev": "next",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
-  "author": "Iain Collins <me@iaincollins.com>",
-  "contributors": [
-    "Balázs Orbán <info@balazsorban.com>",
-    "Nico Domino <yo@ndo.dev>",
-    "Lluis Agusti <hi@llu.lu>"
-  ],
   "dependencies": {
     "next": "^13.5.6",
     "next-auth": "^4.24.7",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "@wagmi/core": "^2.6.9",
+    "@worldcoin/idkit": "^1.1.4",
+    "@tanstack/react-query": "^5.28.6",
+    "connectkit": "^1.7.2",
+    "viem": "^2.8.16",
+    "wagmi": "^2.5.11"
   },
   "devDependencies": {
     "@types/node": "^18.19.26",
