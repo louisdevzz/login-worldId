@@ -82,18 +82,24 @@ export default function IndexPage() {
     const submitTx = async (proof: ISuccessResult) => {
       try {
         await writeContractAsync({
-          address: `0x7614974e05dc974d21ac2888b4d5d5b49c9c28b7`,
+          address: `0x9E102921DF5513f41213B3Beec4734C118AEcFeB`,
           account: account.address!,
           abi,
-          functionName: 'approve',
+          functionName: 'buyCreditScoreNFT',
           args: [
+            'Netfix subscription',
             account.address!,
-            BigInt(0)
+            BigInt(proof!.merkle_root),
+            BigInt(proof!.nullifier_hash),
+            decodeAbiParameters(
+              parseAbiParameters('uint256[8]'),
+              proof!.proof as `0x${string}`
+            )[0],
           ],
         })
         setDone(true)
         toast.success('Mint successful')
-      } catch (error) {throw new Error((error as BaseError).shortMessage)}
+      } catch (error) {console.log(error)}
     }
 
     const onStake = async (proof: ISuccessResult) => {
@@ -129,7 +135,7 @@ export default function IndexPage() {
           ],
         })
         setDone(true)
-      } catch (error) {throw new Error((error as BaseError).shortMessage)}
+      } catch (error) {console.log(error)}
     }
   
 
@@ -144,7 +150,7 @@ export default function IndexPage() {
             app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
             action={process.env.NEXT_PUBLIC_ACTION as string}
             signal={account?.address}
-            onSuccess={verifyAndExecute}
+            onSuccess={submitTx}
             autoClose
           />
         )
@@ -198,13 +204,15 @@ export default function IndexPage() {
                             <input
                                 onChange={(e)=>setValueStake(e.target.value)}
                                 type="text"
-                                value={''}
+                                value={valueStake as string}
                                 placeholder="Amount to stake"
                                 className="border border-gray-300 rounded-md p-2 px-3 flex-grow outline-none"
                             />
                           </div>
                           <div className="flex flex-row gap-10 mt-4">
-                            <button onClick={()=>setOpen(true)} className="button-mint">
+                            <button onClick={()=>{
+                              setOpen(true)
+                            }} className="button-mint">
                               <span className="button_top-mint">Stake</span>
                             </button>
                             <button className="border border-orange-300 rounded-md p-2 px-3 cursor-pointer">
