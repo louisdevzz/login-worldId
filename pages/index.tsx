@@ -58,22 +58,38 @@ export default function IndexPage() {
         functionName: 'ownerNftType',
         args: tokenId ? [account.address,BigInt(tokenId)] : undefined,
     })
+    const { data: creditScore } = useReadContract({
+      address: contractAddress,
+      abi,
+      functionName: 'getCreditScoreByAddress',
+      args:  [account.address!]
+    })
+
     
-    // const { data: canLend } = useReadContract({
-    //   address: '0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0',
-    //   abi: abiLend,
-    //   functionName: 'canTakeLoan',
-    //   args:  [account.address!]
-    // })
+
+    const { data: canLend } = useReadContract({
+      address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
+      abi: abiLend,
+      functionName: 'canTakeLoan',
+      args:  [account.address!]
+    })
 
     const { data: stakedBalance } = useReadContract({
-      address: '0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0',
+      address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
       abi: abiLend,
       functionName: 'stakedBalanceOf',
       args:  [account.address!]
     })
-    
 
+    const { data: pendingReward } = useReadContract({
+      address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
+      abi: abiLend,
+      functionName: 'getPendingRewards',
+      args:  [account.address!]
+    })
+    
+    console.log('canLend',canLend)
+    console.log('pendingReward',pendingReward)
     useEffect(() => {
         if (nftType == "Netfix subscription") {
           setIsMinted(true)
@@ -107,7 +123,7 @@ export default function IndexPage() {
     const onStake = async (proof: ISuccessResult) => {
       try {
         await writeContractAsync({
-          address: `0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0`,
+          address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
           account: account.address!,
           abi: abiLend,
           functionName: 'stake',
@@ -115,7 +131,8 @@ export default function IndexPage() {
           value: BigInt(parseFloat(valueStake!)*10**18)
         })
         setDone(true)
-        toast.success('Lending successful')
+        setValueStake('')
+        toast.success('Stake successful')
       } catch (error) {console.log(error)}
     }
 
@@ -123,7 +140,16 @@ export default function IndexPage() {
       if(Number(stakedBalance) > 0){
         try {
           await writeContractAsync({
-            address: `0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0`,
+            address: contractAddress,
+            account: account.address!,
+            abi,
+            functionName: 'approveContract',
+            args: [
+              `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
+            ],
+          })
+          await writeContractAsync({
+            address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
             account: account.address!,
             abi: abiLend,
             functionName: 'takeLoan',
@@ -137,7 +163,7 @@ export default function IndexPage() {
       }
     }
 
-  //console.log('isMinted ',isMinted)
+  console.log('creditScore ',creditScore)
   return (
     <Layout>
       
@@ -161,7 +187,7 @@ export default function IndexPage() {
                 <div className="flex items-center space-x-4">
                     <div className="relative">
                         <div className="w-32 h-32 rounded-full border-8 border-gray-300 flex items-center justify-center text-gray-500 text-4xl font-bold">
-                            10
+                        {Array.isArray(creditScore) && creditScore.length > 0 ? creditScore[0].toString() : 0}
                         </div>
                         <div className="absolute -bottom-4 font-semibold left-[72%] transform text-xs -translate-x-1/2 text-gray-500 w-32 pb-10">
                             credit score
@@ -196,7 +222,7 @@ export default function IndexPage() {
                       <div className="">
                           <h2 className="text-xl font-semibold mb-4">Your Staking Dashboard</h2>
                           <p className="text-lg mb-4">
-                              Total Staked Amount: <span className="font-bold">0 ETH</span>
+                              Total Staked Amount: <span className="font-bold"> {Number(stakedBalance)/10**18} ETH</span>
                           </p>
                           <div className="flex items-center space-x-4">
                             <input
@@ -207,18 +233,12 @@ export default function IndexPage() {
                                 className="border border-gray-300 rounded-md p-2 px-3 flex-grow outline-none"
                             />
                           </div>
-                          <div className="flex flex-row gap-10 mt-4">
-                            <button onClick={()=>{
+                          <button onClick={()=>{
                               setTypeSubmit('stake')
                               setOpen(true)
-                            }} className="button-mint">
+                            }} className="button-mint float-end justify-end mt-5">
                               <span className="button_top-mint">Stake</span>
-                            </button>
-                            <button className="border border-orange-300 rounded-md p-2 px-3 cursor-pointer">
-                              <span className="text-orange-500 font-semibold">Unstake</span>
-                            </button>
-
-                          </div>
+                          </button>
                       </div>
                       ) 
                   }
@@ -233,7 +253,7 @@ export default function IndexPage() {
                       <div className="">
                           <h2 className="text-xl font-semibold mb-4">Your unstake Dashboard</h2>
                           <p className="text-lg mb-4">
-                              Total Staked Amount: <span className="font-bold">0 ETH</span>
+                              Total Staked Amount: <span className="font-bold">{Number(stakedBalance)/10**18} ETH</span>
                           </p>
                           <div className="flex items-center space-x-4">
                             <input
@@ -245,7 +265,7 @@ export default function IndexPage() {
                             
                           </div>
                           <button className="button-mint mt-4 float-end">
-                                <span className="button_top-mint">Widthdraw</span>
+                                <span className="button_top-mint">UnStake</span>
                           </button>
                       </div>
                       )}
@@ -258,7 +278,7 @@ export default function IndexPage() {
                   <h1 className="text-2xl font-bold mb-6">Claim Reward</h1>
                   {account.isConnected && (
                       <div className="relative h-full">
-                          <h2 className="text-xl font-semibold mb-4">Your Widthdraw Dashboard</h2>
+                          <h2 className="text-xl font-semibold mb-4">Your Claim Reward Dashboard</h2>
                           <p className="text-lg mb-4">
                               Total Amount Reward: <span className="font-bold">0 ETH</span>
                           </p>
