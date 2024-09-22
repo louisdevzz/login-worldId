@@ -2,8 +2,6 @@
 import Layout from "../components/layout"
 import abi from '@/lib/ContractAbi.json'
 import abiLend from '@/lib/ContractAbiLend.json'
-import abiToken from '@/lib/ContractAbiToken.json'
-import abiWorldID from '@/lib/abi.json'
 import { IDKitWidget, ISuccessResult, useIDKit } from '@worldcoin/idkit'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, type BaseError, useReadContract } from 'wagmi'
 import { decodeAbiParameters, parseAbiParameters } from 'viem'
@@ -39,7 +37,13 @@ export default function IndexPage() {
     useEffect(() => {
       if(isConfirmed){
         toast.success('Transaction successful')
-        window.location.reload()
+        refetchCreditScore()
+        refetchCanLend()
+        refetchLoanAmount()
+        refetchStakedBalance()
+        refetchPendingReward()
+        refetchApproved()
+        //window.location.reload()
       }
       if(isConfirming){
         toast.info('Please wait for the transaction to be confirmed')
@@ -84,42 +88,42 @@ export default function IndexPage() {
   }, [nftType])
 
     
-    const { data: creditScore } = useReadContract({
+    const { data: creditScore,refetch:refetchCreditScore } = useReadContract({
       address: contractAddress,
       abi,
       functionName: 'getCreditScoreByAddress',
       args:  [account.address!]
     })
 
-    const { data: canLend } = useReadContract({
+    const { data: canLend,refetch:refetchCanLend } = useReadContract({
       address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
       abi: abiLend,
       functionName: 'canTakeLoan',
       args:  [account.address!]
     })
 
-    const { data: loanAmount } = useReadContract({
+    const { data: loanAmount,refetch:refetchLoanAmount } = useReadContract({
       address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
       abi: abiLend,
       functionName: 'loanBalanceOf',
       args:  [account.address!]
     })
 
-    const { data: stakedBalance } = useReadContract({
+    const { data: stakedBalance,refetch:refetchStakedBalance } = useReadContract({
       address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
       abi: abiLend,
-      functionName: 'stakedBalanceOf',
-      args:  [account.address!]
+      functionName: 'totalStaked',
+      args:  []
     })
 
-    const { data: pendingReward } = useReadContract({
+    const { data: pendingReward,refetch:refetchPendingReward } = useReadContract({
       address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
       abi: abiLend,
       functionName: 'getPendingRewards',
       args:  [account.address!]
     })
 
-    const { data: approved } = useReadContract({
+    const { data: approved,refetch:refetchApproved } = useReadContract({
       address: contractAddress,
       abi,
       functionName: 'getApprovedContracts',
@@ -136,7 +140,7 @@ export default function IndexPage() {
     },[loanAmount])
 
     // console.log('canLend',canLend)
-    console.log('loanAmount',loanAmount)
+    //console.log('loanAmount',loanAmount)
     // console.log('approved',approved)
 
 
@@ -280,10 +284,7 @@ export default function IndexPage() {
         })
         setDone(true)
         localStorage.setItem('lending', 'false')
-        setTimeout(()=>{
-          window.location.reload()
-        },20000)
-        toast.success('Repay successful')
+        //toast.success('Repay successful')
         setLending(false)
       } catch (error) {console.log(error)}
     }
