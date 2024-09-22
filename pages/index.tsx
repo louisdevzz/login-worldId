@@ -150,7 +150,7 @@ export default function IndexPage() {
             app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
             action={process.env.NEXT_PUBLIC_ACTION as string}
             signal={account?.address}
-            onSuccess={submitTx}
+            onSuccess={typeSubmit == "mint"&&submitTx}
             autoClose
           />
         )
@@ -280,62 +280,23 @@ export default function IndexPage() {
             A unique collection of digital art NFTs that fuse creativity with innovation.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* <div className="border border-gray-300 rounded-lg p-4">
-              <div className="flex items-center space-x-4 mb-4 justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
-                  <div>
-                    <h3 className="font-bold">
-                      Holonym ZK ID 
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      verifier.holonym_id.near
-                    </p>
-                  </div>
-                </div>
-                <span className="ml-auto text-end font-semibold w-24 text-sm flex flex-col">
-                  0.12 ETH <small className="text-gray-500">can lending</small>
-                </span>
-              </div>
-              <p className="text-sm mb-4">
-                A private proof of owning a unique government ID. For instructions on how to ...
-              </p>
-              <div className="flex items-center space-x-2 justify-between border-t py-2 border-gray-300 w-full">
-                <div className="flex items-center space-x-2">
-                  <div className="w-5 h-5 bg-gray-300 rounded-full"></div>
-                  <span className="text-sm">
-                    holonym_id.near
-                  </span>
-                </div>
-                
-                {
-                  !done && <button disabled={isPending} onClick={()=>setOpen(true)} className="button-mint mt-1">
-                    <span className="button_top-mint">Mint</span>
-                </button>
-                }
-                {
-                  done && <button disabled={isPending} onClick={()=>setOpen(true)} className="button-mint mt-1">
-                    <span className="button_top-mint">Lending</span>
-                </button>
-                }
-              </div>
-            </div> */}
+
             <div className="bg-white rounded-lg shadow-lg p-4 max-w-xs border border-gray-200">
                 <img 
                     alt="A futuristic, robotic device with a yellow and gray color scheme" 
                     className="rounded-lg border border-gray-200 p-2 transition-transform duration-300 ease-in-out hover:scale-105" 
                     height="400" 
-                    src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-BVbpSZmLndA7MfHIxv2ahIKS/user-IBY8IaMXtVn7IVIdZeyvjx16/img-YDDBzyw1YG2Z1SH2CUkNsQgs.png?st=2024-09-21T18%3A50%3A34Z&amp;se=2024-09-21T20%3A50%3A34Z&amp;sp=r&amp;sv=2024-08-04&amp;sr=b&amp;rscd=inline&amp;rsct=image/png&amp;skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2024-09-20T23%3A18%3A54Z&amp;ske=2024-09-21T23%3A18%3A54Z&amp;sks=b&amp;skv=2024-08-04&amp;sig=iD0Vi5LsS4ToCn2ycSHZ9iUh7bbZgW8GUPIcyesAMTM%3D" 
+                    src="https://cdn.tgdd.vn/Files/2023/10/03/1550181/image71-031023-142108-800-resize.jpg" 
                     width="400"
                 />
                 <div className="p-4">
                   <div className="text-gray-400 text-sm">
-                    verifier.holonym_id.near
+                    verifier.citadel.onchain
                   <i className="fas fa-check-circle text-yellow-500">
                   </i>
                   </div>
                   <div className="text-black text-lg font-bold mt-1">
-                    NFT Credit Score
+                    Netflix Subscription
                   </div>
                   <div className="flex justify-between items-center mt-4">
                     <div className="text-gray-400 text-sm">
@@ -350,12 +311,18 @@ export default function IndexPage() {
                       !done && !isMinted && <button disabled={isPending} onClick={()=>{
                         setTypeSubmit('mint')
                         setOpen(true)
-                      }} className="button-mint mt-4">
-                          <span className="button_top-mint">{isConfirming ? 'Pending' : 'Mint'}</span>
+                      }} className="button-mint mt-4 flex flex-row">
+                          <span className="button_top-mint">{isConfirming ?
+                            <div className="flex flex-row items-center gap-1">
+                              <span>isPending</span>
+                              <img width={25} src="/assets/reload.svg" alt="icon" />
+                            </div>
+                          : 'Mint'}</span>
+                          
                       </button>
                     }
                     {
-                      isMinted && <button disabled={isPending} onClick={()=>{
+                      done||isMinted && <button disabled={isPending} onClick={()=>{
                         setTypeSubmit('lending')
                         setOpen(true)
                       }} className="button-mint mt-4">
