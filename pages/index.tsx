@@ -65,13 +65,13 @@ export default function IndexPage() {
     //   args:  [account.address!]
     // })
 
-    // const { data: loanAmount } = useReadContract({
-    //   address: '0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0',
-    //   abi: abiLend,
-    //   functionName: 'loanBalanceOf',
-    //   args:  [account.address!]
-    // })
-
+    const { data: stakedBalance } = useReadContract({
+      address: '0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0',
+      abi: abiLend,
+      functionName: 'stakedBalanceOf',
+      args:  [account.address!]
+    })
+    
 
     useEffect(() => {
         if (nftType == "Netfix subscription") {
@@ -115,32 +115,28 @@ export default function IndexPage() {
         })
         setDone(true)
         toast.success('Lending successful')
-      } catch (error) {throw new Error((error as BaseError).shortMessage)}
-    }
-
-    const verifyAndExecute = async (proof: ISuccessResult) => {
-      try {
-        await writeContractAsync({
-          address: `0xC49Fe681c8a6e5D332Eb7767703CCe4CB1CdAd4F`,
-          account: account.address!,
-          abi: abiWorldID,
-          functionName: 'verifyAndExecute',
-          args: [
-            account.address!,
-            BigInt(proof!.merkle_root),
-            BigInt(proof!.nullifier_hash),
-            decodeAbiParameters(
-              parseAbiParameters('uint256[8]'),
-              proof!.proof as `0x${string}`
-            )[0],
-          ],
-        })
-        setDone(true)
       } catch (error) {console.log(error)}
     }
-  
 
-  console.log('isMinted ',isMinted)
+    const onLending = async (proof: ISuccessResult) => {
+      if(Number(stakedBalance) > 0){
+        try {
+          await writeContractAsync({
+            address: `0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0`,
+            account: account.address!,
+            abi: abiLend,
+            functionName: 'takeLoan',
+            args: [],
+          })
+          setDone(true)
+          toast.success('Lending successful')
+        } catch (error) {console.log(error)}
+      }else{
+        toast.error('You must stake your credit score first')
+      }
+    }
+
+  //console.log('isMinted ',isMinted)
   return (
     <Layout>
       
@@ -151,7 +147,7 @@ export default function IndexPage() {
             app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
             action={process.env.NEXT_PUBLIC_ACTION as string}
             signal={account?.address}
-            onSuccess={typeSubmit == "mint"&&submitTx}
+            onSuccess={typeSubmit == "mint"?submitTx:typeSubmit=="stake"?onStake:onLending}
             autoClose
           />
         )
@@ -212,6 +208,7 @@ export default function IndexPage() {
                           </div>
                           <div className="flex flex-row gap-10 mt-4">
                             <button onClick={()=>{
+                              setTypeSubmit('stake')
                               setOpen(true)
                             }} className="button-mint">
                               <span className="button_top-mint">Stake</span>
