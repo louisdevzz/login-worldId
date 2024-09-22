@@ -233,7 +233,9 @@ export default function IndexPage() {
           />
         )
       }
-      <div className="max-w-6xl mx-auto p-4">
+      {
+        account?.address&&(
+          <div className="max-w-6xl mx-auto p-4">
       {
         account?.address && (
           <div className="flex md:flex-row flex-col md:space-x-6 mb-10 gap-5 md:gap-0">
@@ -418,6 +420,8 @@ export default function IndexPage() {
           </div>
         </section>
       </div>
+        )
+      }
     </Layout>
   )
 }
