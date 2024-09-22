@@ -430,13 +430,12 @@ export default function IndexPage() {
                           <span className="button_top-mint">Lending</span>
                       </button>
                     }
-                     {
-                    lending && <button disabled={true} className="button-mint mt-4 float-end">
+                    {
+                    isMinted&&lending && <button disabled={true} className="button-mint mt-4 float-end">
                           <span className="button_top-mint">Repay</span>
                       </button>
                     }
                   </div>
-                 
                 </div>
                 </div>
           </div>
