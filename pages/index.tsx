@@ -431,10 +431,7 @@ export default function IndexPage() {
                       </button>
                     }
                      {
-                    lending && <button disabled={isPending} onClick={()=>{
-                      setTypeSubmit('repay')
-                      setOpen(true)
-                    }} className="button-mint mt-4 float-end">
+                    lending && <button disabled={true} className="button-mint mt-4 float-end">
                           <span className="button_top-mint">Repay</span>
                       </button>
                     }
