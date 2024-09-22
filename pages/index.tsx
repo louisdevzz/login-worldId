@@ -228,10 +228,10 @@ export default function IndexPage() {
         {
           account?.address && (
             <div className="border border-gray-300 rounded-lg p-5 shadow-sm w-1/2">
-                  <h1 className="text-2xl font-bold mb-6">Widthdraw</h1>
+                  <h1 className="text-2xl font-bold mb-6">UnStake</h1>
                   {account.isConnected && (
                       <div className="">
-                          <h2 className="text-xl font-semibold mb-4">Your Widthdraw Dashboard</h2>
+                          <h2 className="text-xl font-semibold mb-4">Your unstake Dashboard</h2>
                           <p className="text-lg mb-4">
                               Total Staked Amount: <span className="font-bold">0 ETH</span>
                           </p>
