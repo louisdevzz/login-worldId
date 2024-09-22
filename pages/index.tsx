@@ -117,6 +117,27 @@ export default function IndexPage() {
         })
         setDone(true)
         toast.success('Mint successful')
+        setIsMinted(true)
+        setTimeout(()=>{
+          window.location.reload()
+        },20000)
+      } catch (error) {console.log(error)}
+    }
+
+    const onClaim = async (proof: ISuccessResult) => {
+      try {
+        await writeContractAsync({
+          address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
+          account: account.address!,
+          abi,
+          functionName: 'claimRewards (0x372500ab)',
+          args: [],
+        })
+        setDone(true)
+        toast.success('Claim successful')
+        setTimeout(()=>{
+          window.location.reload()
+        },20000)
       } catch (error) {console.log(error)}
     }
 
@@ -133,6 +154,28 @@ export default function IndexPage() {
         setDone(true)
         setValueStake('')
         toast.success('Stake successful')
+        setTimeout(()=>{
+          window.location.reload()
+        },20000)
+      } catch (error) {console.log(error)}
+    }
+
+    const onUnStake = async (proof: ISuccessResult) => {
+      try {
+        await writeContractAsync({
+          address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
+          account: account.address!,
+          abi: abiLend,
+          functionName: 'unstake',
+          args: [],
+          value: BigInt(parseFloat(valueStake!)*10**18)
+        })
+        setDone(true)
+        setValueStake('')
+        toast.success('UnStake successful')
+        setTimeout(()=>{
+          window.location.reload()
+        },20000)
       } catch (error) {console.log(error)}
     }
 
@@ -157,6 +200,9 @@ export default function IndexPage() {
           })
           setDone(true)
           toast.success('Lending successful')
+          setTimeout(()=>{
+            window.location.reload()
+          },20000)
         } catch (error) {console.log(error)}
       }else{
         toast.error('You must stake your credit score first')
@@ -174,7 +220,7 @@ export default function IndexPage() {
             app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
             action={process.env.NEXT_PUBLIC_ACTION as string}
             signal={account?.address}
-            onSuccess={typeSubmit == "mint"?submitTx:typeSubmit=="stake"?onStake:onLending}
+            onSuccess={typeSubmit == "mint"?submitTx:typeSubmit=="stake"?onStake:typeSubmit=="claim"?onClaim:typeSubmit=="unstake"?onUnStake:onLending}
             autoClose
           />
         )
@@ -264,7 +310,10 @@ export default function IndexPage() {
                             />
                             
                           </div>
-                          <button className="button-mint mt-4 float-end">
+                          <button onClick={()=>{
+                              setTypeSubmit('unstake')
+                              setOpen(true)
+                            }} className="button-mint mt-4 float-end">
                                 <span className="button_top-mint">UnStake</span>
                           </button>
                       </div>
@@ -280,9 +329,12 @@ export default function IndexPage() {
                       <div className="relative h-full">
                           <h2 className="text-xl font-semibold mb-4">Your Claim Reward Dashboard</h2>
                           <p className="text-lg mb-4">
-                              Total Amount Reward: <span className="font-bold">0 ETH</span>
+                              Total Amount Reward: <span className="font-bold">{(Number(pendingReward)/10**18).toFixed(10)} ETH</span>
                           </p>
-                          <button className="button-mint mt-4 float-end absolute bottom-14 right-0">
+                          <button onClick={()=>{
+                              setTypeSubmit('claim')
+                              setOpen(true)
+                            }} className="button-mint mt-4 float-end absolute bottom-14 right-0">
                                 <span className="button_top-mint">Claim</span>
                           </button>
                       </div>
