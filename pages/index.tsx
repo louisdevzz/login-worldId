@@ -107,10 +107,24 @@ export default function IndexPage() {
       functionName: 'getPendingRewards',
       args:  [account.address!]
     })
-    
-    console.log('canLend',canLend)
-    console.log('loanAmount',loanAmount)
 
+    const { data: approved } = useReadContract({
+      address: contractAddress,
+      abi,
+      functionName: 'getApprovedContracts',
+      args:  [account.address!]
+    })
+    
+    
+    useEffect(()=>{
+      if(Number(loanAmount) > 0){
+        setLending(true)
+      }
+    },[loanAmount])
+
+    // console.log('canLend',canLend)
+    // console.log('loanAmount',loanAmount)
+    // console.log('approved',approved)
 
 
     const submitTx = async (proof: ISuccessResult) => {
@@ -210,15 +224,17 @@ export default function IndexPage() {
     const onLending = async (proof: ISuccessResult) => {
       if(Number(stakedBalance) > 0){
         try {
-          await writeContractAsync({
-            address: contractAddress,
-            account: account.address!,
-            abi,
-            functionName: 'approveContract',
-            args: [
-              `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
-            ],
-          })
+          if(Array.isArray(approved) && approved.length == 0){
+            await writeContractAsync({
+              address: contractAddress,
+              account: account.address!,
+              abi,
+              functionName: 'approveContract',
+              args: [
+                `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
+              ],
+            })
+          }
           await writeContractAsync({
             address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
             account: account.address!,
@@ -259,7 +275,7 @@ export default function IndexPage() {
       } catch (error) {console.log(error)}
     }
 
-  console.log('creditScore ',creditScore)
+  //console.log('creditScore ',creditScore)
   return (
     <Layout>
       
