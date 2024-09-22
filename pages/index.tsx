@@ -27,6 +27,7 @@ export default function IndexPage() {
     const [tokenId, setTokenId] = useState<string | null>(null)
     const [typeSubmit, setTypeSubmit] = useState<string | null>(null)
     const [valueStake, setValueStake] = useState<string | null>(null)
+    const [valueUnStake, setValueUnStake] = useState<string | null>(null)
     const [lending, setLending] = useState(false)
     
     useEffect(() => {
@@ -34,6 +35,16 @@ export default function IndexPage() {
         setLending(true)
       }
     }, [])
+
+    useEffect(() => {
+      if(isConfirmed){
+        toast.success('Transaction successful')
+        window.location.reload()
+      }
+      if(isConfirming){
+        toast.info('Please wait for the transaction to be confirmed')
+      }
+    }, [isConfirmed,isConfirming])
 
     useEffect(() => {
         const fetchTokenId = async () => {
@@ -119,11 +130,13 @@ export default function IndexPage() {
     useEffect(()=>{
       if(Number(loanAmount) > 0){
         setLending(true)
+      }else{
+        setLending(false)
       }
     },[loanAmount])
 
     // console.log('canLend',canLend)
-    // console.log('loanAmount',loanAmount)
+    console.log('loanAmount',loanAmount)
     // console.log('approved',approved)
 
 
@@ -149,7 +162,7 @@ export default function IndexPage() {
         setTimeout(()=>{
           window.location.reload()
         },20000)
-        toast.success('Mint successful')
+        //toast.success('Mint successful')
         setIsMinted(true)
 
       } catch (error) {console.log(error)}
@@ -168,13 +181,13 @@ export default function IndexPage() {
         setTimeout(()=>{
           window.location.reload()
         },20000)
-        toast.success('Claim successful')
+        //toast.success('Claim successful')
 
       } catch (error) {console.log(error)}
     }
 
     const onStake = async (proof: ISuccessResult) => {
-      if(parseFloat(valueStake as string) > 0.001){
+      if(parseFloat(valueStake as string) >= 0.001){
         try {
           await writeContractAsync({
             address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
@@ -189,7 +202,7 @@ export default function IndexPage() {
         setTimeout(()=>{
           window.location.reload()
           },20000)
-        toast.success('Stake successful')
+        //toast.success('Stake successful')
 
         } catch (error) {console.log(error)}
       }else{
@@ -198,7 +211,7 @@ export default function IndexPage() {
     }
 
     const onUnStake = async (proof: ISuccessResult) => {
-      if(parseFloat(valueStake as string) > 0.001){
+      if(parseFloat(valueStake as string) >= 0.001){
         try {
           await writeContractAsync({
             address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
@@ -206,14 +219,14 @@ export default function IndexPage() {
             abi: abiLend,
             functionName: 'unstake',
             args: [],
-            value: BigInt(parseFloat(valueStake!)*10**18)
+            value: BigInt(parseFloat(valueUnStake!)*10**18)
           })
           setDone(true)
           setValueStake('')
           setTimeout(()=>{
             window.location.reload()
           },20000)
-          toast.success('UnStake successful')
+          //toast.success('UnStake successful')
 
         } catch (error) {console.log(error)}
       }else{
@@ -248,7 +261,7 @@ export default function IndexPage() {
             window.location.reload()
           },20000)
           setLending(true)
-          toast.success('Lending successful')
+          //toast.success('Lending successful')
         } catch (error) {console.log(error)}
       }else{
         toast.error('You must stake your credit score first')
@@ -372,7 +385,8 @@ export default function IndexPage() {
                           <div className="flex items-center space-x-4">
                             <input
                                 type="text"
-                                value={''}
+                                onChange={(e)=>setValueUnStake(e.target.value)}
+                                value={valueUnStake as string}
                                 placeholder="Amount to widthdraw"
                                 className="border border-gray-300 rounded-md p-2 px-3 flex-grow outline-none"
                             />
@@ -439,7 +453,7 @@ export default function IndexPage() {
                   </i>
                   </Link>
                   <div className="text-black text-lg font-bold mt-1">
-                  Credit Score From Citadel Bank
+                    Credit Score From Citadel Bank
                   </div>
                   <div className="flex justify-between items-center mt-4">
                     {
@@ -455,7 +469,7 @@ export default function IndexPage() {
                       )
                     }
                     {
-                      !done && !isMinted && <button disabled={isPending} onClick={()=>{
+                      !done && !isMinted && <button disabled={isPending || isConfirming} onClick={()=>{
                         setTypeSubmit('mint')
                         setOpen(true)
                       }} className={`button-mint mt-4 flex flex-row ${lending&&"hidden"}`}>
@@ -469,7 +483,7 @@ export default function IndexPage() {
                       </button>
                     }
                     {
-                      isMinted && !lending && <button disabled={isPending} onClick={()=>{
+                      isMinted && !lending && <button disabled={isPending || isConfirming} onClick={()=>{
                         setTypeSubmit('lending')
                         setOpen(true)
                       }} className="button-mint mt-4">
@@ -477,14 +491,14 @@ export default function IndexPage() {
                       </button>
                     }
                     {
-                    isMinted&&lending && <button disabled={isPending} onClick={()=>{
+                    isMinted&&lending && <button disabled={isPending || isConfirming} onClick={()=>{
                       setTypeSubmit('repay')
                       setOpen(true)
                     }} className="button-mint mt-4 float-end">
                           <span className="button_top-mint">Repay</span>
                       </button>
                     }
-                  </div>
+                  </div>  
                 </div>
                 </div>
           </div>
