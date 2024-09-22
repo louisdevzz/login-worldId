@@ -22,7 +22,7 @@ export default function IndexPage() {
         hash,
     }) 
     const [isMinted, setIsMinted] = useState(false)
-    const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`
+    const contractAddress = `0x9E102921DF5513f41213B3Beec4734C118AEcFeB`
     const [tokenId, setTokenId] = useState<string | null>(null)
     const [typeSubmit, setTypeSubmit] = useState<string | null>(null)
     const [valueStake, setValueStake] = useState<string | null>(null)
@@ -57,27 +57,28 @@ export default function IndexPage() {
         functionName: 'ownerNftType',
         args: tokenId ? [account.address,BigInt(tokenId)] : undefined,
     })
+    
+    // const { data: canLend } = useReadContract({
+    //   address: '0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0',
+    //   abi: abiLend,
+    //   functionName: 'canTakeLoan',
+    //   args:  [account.address!]
+    // })
 
-    const { data: canLend } = useReadContract({
-      address: '0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0',
-      abi: abiLend,
-      functionName: 'canTakeLoan',
-      args:  [account.address!]
-    })
-
-    const { data: loanAmount } = useReadContract({
-      address: '0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0',
-      abi: abiLend,
-      functionName: 'loanBalanceOf',
-      args:  [account.address!]
-    })
+    // const { data: loanAmount } = useReadContract({
+    //   address: '0x925648eFf5A52B6A0Cd9187C1b4A461a2E258aF0',
+    //   abi: abiLend,
+    //   functionName: 'loanBalanceOf',
+    //   args:  [account.address!]
+    // })
 
 
     useEffect(() => {
-        if (nftType == "Netflix subscription") {
+        if (nftType == "Netfix subscription") {
           setIsMinted(true)
         }
     }, [nftType])
+
 
     const submitTx = async (proof: ISuccessResult) => {
       try {
@@ -139,7 +140,7 @@ export default function IndexPage() {
     }
   
 
-  //console.log('hash',hash)
+  console.log('isMinted ',isMinted)
   return (
     <Layout>
       
@@ -322,7 +323,7 @@ export default function IndexPage() {
                       </button>
                     }
                     {
-                      done||isMinted && <button disabled={isPending} onClick={()=>{
+                      isMinted && <button disabled={isPending} onClick={()=>{
                         setTypeSubmit('lending')
                         setOpen(true)
                       }} className="button-mint mt-4">
