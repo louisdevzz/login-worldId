@@ -226,6 +226,7 @@ export default function IndexPage() {
           setTimeout(()=>{
             window.location.reload()
           },20000)
+          setLending(true)
           toast.success('Lending successful')
         } catch (error) {console.log(error)}
       }else{
