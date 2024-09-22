@@ -426,14 +426,18 @@ export default function IndexPage() {
                   Credit Score From Citadel Bank
                   </div>
                   <div className="flex justify-between items-center mt-4">
-                    <div className="text-gray-400 text-sm">
-                      <div className="mt-1">
-                      Loan Amount
-                      </div>
-                      <div className="text-black font-bold mt-1">
-                      {(900000000000/10**18).toFixed(7)} ETH
-                      </div>
-                    </div>
+                    {
+                      isMinted&&(
+                        <div className="text-gray-400 text-sm">
+                          <div className="mt-1">
+                          Loan Amount
+                          </div>
+                          <div className="text-black font-bold mt-1">
+                          {(900000000000/10**18).toFixed(7)} ETH
+                          </div>
+                        </div>
+                      )
+                    }
                     {
                       !done && !isMinted && <button disabled={isPending} onClick={()=>{
                         setTypeSubmit('mint')
