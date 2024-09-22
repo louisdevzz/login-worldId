@@ -428,7 +428,7 @@ export default function IndexPage() {
                   <div className="flex justify-between items-center mt-4">
                     <div className="text-gray-400 text-sm">
                       <div className="mt-1">
-                      Price
+                      Loan Amount
                       </div>
                       <div className="text-black font-bold mt-1">
                       {(900000000000/10**18).toFixed(7)} ETH
