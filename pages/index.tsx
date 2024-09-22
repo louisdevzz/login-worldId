@@ -142,9 +142,10 @@ export default function IndexPage() {
     }
 
     const onStake = async (proof: ISuccessResult) => {
-      try {
-        await writeContractAsync({
-          address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
+      if(parseFloat(valueStake as string) > 0.001){
+        try {
+          await writeContractAsync({
+            address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
           account: account.address!,
           abi: abiLend,
           functionName: 'stake',
@@ -156,27 +157,34 @@ export default function IndexPage() {
         toast.success('Stake successful')
         setTimeout(()=>{
           window.location.reload()
-        },20000)
-      } catch (error) {console.log(error)}
+          },20000)
+        } catch (error) {console.log(error)}
+      }else{
+        toast.error('Minimum is 0.001 eth')
+      }
     }
 
     const onUnStake = async (proof: ISuccessResult) => {
-      try {
-        await writeContractAsync({
-          address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
-          account: account.address!,
-          abi: abiLend,
-          functionName: 'unstake',
-          args: [],
-          value: BigInt(parseFloat(valueStake!)*10**18)
-        })
-        setDone(true)
-        setValueStake('')
-        toast.success('UnStake successful')
-        setTimeout(()=>{
-          window.location.reload()
-        },20000)
-      } catch (error) {console.log(error)}
+      if(parseFloat(valueStake as string) > 0.001){
+        try {
+          await writeContractAsync({
+            address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
+            account: account.address!,
+            abi: abiLend,
+            functionName: 'unstake',
+            args: [],
+            value: BigInt(parseFloat(valueStake!)*10**18)
+          })
+          setDone(true)
+          setValueStake('')
+          toast.success('UnStake successful')
+          setTimeout(()=>{
+            window.location.reload()
+          },20000)
+        } catch (error) {console.log(error)}
+      }else{
+        toast.error('Minimum is 0.001 eth')
+      }
     }
 
     const onLending = async (proof: ISuccessResult) => {
