@@ -409,10 +409,10 @@ export default function IndexPage() {
                       </div>
                     </div>
                     {
-                      !done && !isMinted && !lending && <button disabled={isPending} onClick={()=>{
+                      !done && !isMinted && <button disabled={isPending} onClick={()=>{
                         setTypeSubmit('mint')
                         setOpen(true)
-                      }} className="button-mint mt-4 flex flex-row">
+                      }} className={`button-mint mt-4 flex flex-row ${lending&&"hidden"}`}>
                           <span className="button_top-mint">{isConfirming ?
                             <div className="flex flex-row items-center gap-1">
                               <span>isPending</span>
