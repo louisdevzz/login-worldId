@@ -10,6 +10,7 @@ import { decodeAbiParameters, parseAbiParameters } from 'viem'
 import { useEffect, useState } from 'react'
 import { toast } from'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Link from "next/link"
 
 
 export default function IndexPage() {
@@ -190,7 +191,7 @@ export default function IndexPage() {
         {
           account?.address && (
             <div className="border border-gray-300 rounded-lg p-5 shadow-sm w-1/2">
-                  <h1 className="text-2xl font-bold mb-6">Stake Credit Score</h1>
+                  <h1 className="text-2xl font-bold mb-6">Stake</h1>
                   {account.isConnected && (
                       <div className="">
                           <h2 className="text-xl font-semibold mb-4">Your Staking Dashboard</h2>
@@ -227,7 +228,7 @@ export default function IndexPage() {
         {
           account?.address && (
             <div className="border border-gray-300 rounded-lg p-5 shadow-sm w-1/2">
-                  <h1 className="text-2xl font-bold mb-6">Widthdraw Credit Score</h1>
+                  <h1 className="text-2xl font-bold mb-6">Widthdraw</h1>
                   {account.isConnected && (
                       <div className="">
                           <h2 className="text-xl font-semibold mb-4">Your Widthdraw Dashboard</h2>
@@ -284,17 +285,21 @@ export default function IndexPage() {
                     alt="A futuristic, robotic device with a yellow and gray color scheme" 
                     className="rounded-lg border border-gray-200 p-2 transition-transform duration-300 ease-in-out hover:scale-105" 
                     height="400" 
-                    src="https://cdn.tgdd.vn/Files/2023/10/03/1550181/image71-031023-142108-800-resize.jpg" 
+                    src="/assets/background.jpg" 
                     width="400"
                 />
                 <div className="p-4">
-                  <div className="text-gray-400 text-sm">
-                    verifier.citadel.onchain
+                  <Link href={`https://sepolia.etherscan.io/address/0x9E102921DF5513f41213B3Beec4734C118AEcFeB`} target="_blank" className="text-gray-400 text-sm hover:underline">
+                    
+                    {
+                      "0x9E102921DF5513f41213B3Beec4734C118AEcFeB".slice(0, 20) + "..."
+                    }
+                    
                   <i className="fas fa-check-circle text-yellow-500">
                   </i>
-                  </div>
+                  </Link>
                   <div className="text-black text-lg font-bold mt-1">
-                    Netflix Subscription
+                  Credit Score From Citadel Bank
                   </div>
                   <div className="flex justify-between items-center mt-4">
                     <div className="text-gray-400 text-sm">
