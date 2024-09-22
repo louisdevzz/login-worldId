@@ -80,12 +80,17 @@ export default function IndexPage() {
       args:  [account.address!]
     })
 
-    
-
     const { data: canLend } = useReadContract({
       address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
       abi: abiLend,
       functionName: 'canTakeLoan',
+      args:  [account.address!]
+    })
+
+    const { data: loanAmount } = useReadContract({
+      address: '0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61',
+      abi: abiLend,
+      functionName: 'loanBalanceOf',
       args:  [account.address!]
     })
 
@@ -104,7 +109,7 @@ export default function IndexPage() {
     })
     
     console.log('canLend',canLend)
-    console.log('pendingReward',pendingReward)
+    console.log('loanAmount',loanAmount)
 
 
 
@@ -234,6 +239,26 @@ export default function IndexPage() {
       }
     }
 
+    const onRepay = async (proof: ISuccessResult) => {
+      try {
+        await writeContractAsync({
+          address: `0x91c0c1E8Bb63BEa1B92B16836EC68dFfD20F0C61`,
+          account: account.address!,
+          abi: abiLend,
+          functionName: 'payBackLoan',
+          args: [],
+          value: BigInt((Number(loanAmount)+200))
+        })
+        setDone(true)
+        localStorage.setItem('lending', 'false')
+        setTimeout(()=>{
+          window.location.reload()
+        },20000)
+        toast.success('Repay successful')
+        setLending(false)
+      } catch (error) {console.log(error)}
+    }
+
   console.log('creditScore ',creditScore)
   return (
     <Layout>
@@ -245,7 +270,7 @@ export default function IndexPage() {
             app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
             action={process.env.NEXT_PUBLIC_ACTION as string}
             signal={account?.address}
-            onSuccess={typeSubmit == "mint"?submitTx:typeSubmit=="stake"?onStake:typeSubmit=="claim"?onClaim:typeSubmit=="unstake"?onUnStake:onLending}
+            onSuccess={typeSubmit == "mint"?submitTx:typeSubmit=="stake"?onStake:typeSubmit=="claim"?onClaim:typeSubmit=="unstake"?onUnStake:typeSubmit=="lending"?onLending:onRepay}
             autoClose
           />
         )
@@ -406,7 +431,7 @@ export default function IndexPage() {
                       Price
                       </div>
                       <div className="text-black font-bold mt-1">
-                      0.023 ETH
+                      {(900000000000/10**18).toFixed(7)} ETH
                       </div>
                     </div>
                     {
@@ -432,7 +457,10 @@ export default function IndexPage() {
                       </button>
                     }
                     {
-                    isMinted&&lending && <button disabled={true} className="button-mint mt-4 float-end">
+                    isMinted&&lending && <button disabled={isPending} onClick={()=>{
+                      setTypeSubmit('repay')
+                      setOpen(true)
+                    }} className="button-mint mt-4 float-end">
                           <span className="button_top-mint">Repay</span>
                       </button>
                     }
